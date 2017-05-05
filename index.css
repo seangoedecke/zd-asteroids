@@ -32,3 +32,7 @@ div {
   justify-content: center;
   position: relative;
 }
+
+#canvas {
+  border: 5px solid #03363D;
+}
