@@ -86,6 +86,9 @@
 	var isRunning = void 0;
 	var score = 0;
 
+	var godMode = false; // do you die?
+	var gmbuf = [];
+
 	var keys = []; // array of pressed keys
 
 	var resultMessage = document.getElementById('message');
@@ -207,6 +210,15 @@
 	  if (keys.indexOf(key.code) == -1) {
 	    keys.push(key.code);
 	  }
+
+	  gmbuf.push(key.code);
+	  if (gmbuf.length > 5) {
+	    gmbuf.shift();
+	  }
+	  if (gmbuf.join(' ') == ['KeyI KeyD KeyD KeyQ KeyD']) {
+	    godMode = !godMode; // toggle godmode!
+	    alert('God mode ' + (godMode ? 'ENGAGED!' : 'disengaged.'));
+	  }
 	};
 
 	document.onkeyup = function (key) {
@@ -267,7 +279,7 @@
 
 	  if (Composite.allBodies(engine.world).length == bullets.length + 1) {
 	    // if it's just you and your bullets
-	    renderEndGameScreen();
+	    renderEndGameScreen(true);
 	    isRunning = false;
 	  }
 
@@ -275,10 +287,10 @@
 	  Composite.allBodies(engine.world).forEach(function (body) {
 	    if (!body.isBullet && !body.isPlayer) {
 	      // did it hit the player?
-	      if (Bounds.overlaps(player.bounds, body.bounds)) {}
-	      // renderEndGameScreen()
-	      // isRunning = false
-
+	      if (Bounds.overlaps(player.bounds, body.bounds) && !godMode) {
+	        renderEndGameScreen(false);
+	        isRunning = false;
+	      }
 	      // did it hit a bullet?
 	      bullets.forEach(function (bullet) {
 	        if (Bounds.overlaps(body.bounds, bullet.bounds)) {
