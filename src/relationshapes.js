@@ -61,6 +61,7 @@ export const createLargeLShape = (x, y, color) => {
     }),
     successors: [
       createSmallSquare(x, y, color),
+      createSmallSquare(x, y, color),
       createSmallSquare(x, y, color)
     ]
   }
