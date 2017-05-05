@@ -159,7 +159,7 @@
 	};
 
 	var generateAsteroids = function generateAsteroids() {
-	  var numAsteroids = 10;
+	  var numAsteroids = 12;
 	  var asteroids = [];
 	  for (var i = 0; i < numAsteroids; i++) {
 	    asteroids.push(generateBlock());

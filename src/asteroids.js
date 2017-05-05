@@ -99,7 +99,7 @@ const generateBlock = () => {
 }
 
 const generateAsteroids = () => {
-  const numAsteroids = 10
+  const numAsteroids = 12
   const asteroids = []
   for (let i = 0; i < numAsteroids; i++) {
     asteroids.push(generateBlock())
