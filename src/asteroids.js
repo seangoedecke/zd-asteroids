@@ -226,6 +226,7 @@ Events.on(engine, 'beforeTick', () => {
             body.successors.forEach((successor) => {
               World.add(engine.world, successor)
               Body.setPosition(successor, body.position)
+              Body.setAngle(successor, (Math.random() - 0.5))
               Body.setVelocity(successor, Vector.rotate(body.velocity, (Math.random() - 0.5)))
             })
           }
