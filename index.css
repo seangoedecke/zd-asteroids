@@ -1,0 +1,34 @@
+div {
+  font-family: 'Montserrat', sans-serif;
+}
+
+.results {
+  position: absolute;
+  background-color: #F3F0EE;
+  border-style: solid;
+  border-color: #03363D;
+  width: 200px;
+  padding: 20px 40px 20px 40px;
+  margin-bottom: 20px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.results-middle{
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.wrapper {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
