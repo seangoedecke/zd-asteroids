@@ -1,12 +1,9 @@
 import Matter from 'matter-js'
-import MatterWrap from 'matter-wrap'   // Monkey-patched! Do not upgrade!
-import {
-  ZD_COLOUR_DARK,
-  ZD_COLOUR_LIGHT } from './zd-colours'
+import MatterWrap from 'matter-wrap' // Patched in node_modules! Do not upgrade!
+import { ZD_COLOUR_DARK, ZD_COLOUR_LIGHT } from './zd-colours'
 import { getRandomColor, getRandomShape, createConnectRelationshape } from './relationshapes'
-
-Matter.use('matter-wrap') // Monkey-patched! Do not upgrade!
-// try `use(MatterWrap)` ?
+import { plugin } from './wrap-config'
+Matter.use(MatterWrap)
 
 // module aliases
 const Engine = Matter.Engine
@@ -18,7 +15,8 @@ const Bounds = Matter.Bounds
 const Composite = Matter.Composite
 const Runner = Matter.Runner
 const Body = Matter.Body
-// const Svg = Matte r.Svg
+const Vector = Matter.Vector
+const Vertices = Matter.Vertices
 
 let tick  // game tick counter
 let runner // game runner
@@ -53,20 +51,7 @@ const render = Render.create({
   }
 })
 
-const plugin = {
-  wrap: {
-    min: {
-      x: 0,
-      y: 0
-    },
-    max: {
-      x: render.options.width,
-      y: render.options.height
-    }
-  }
-}
-
-const playerShape = Matter.Vertices.create([{x: 0, y: 15}, {x: -10, y: -15}, {x: 10, y: -15}], Body)
+const playerShape = Vertices.create([{x: 0, y: 15}, {x: -10, y: -15}, {x: 10, y: -15}], Body)
 
 const createPlayer = () => {
   const player = Bodies.fromVertices(render.options.width / 2, render.options.height / 2, playerShape, 20, { // triangle
@@ -109,7 +94,7 @@ const generateBlock = () => {
   }
   const block = getRandomShape(x, y, color)
   Body.setAngularVelocity(block, (Math.random() - 0.5) * 0.1)
-  Body.setVelocity(block, Matter.Vector.create((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2))
+  Body.setVelocity(block, Vector.create((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2))
   return block
 }
 
@@ -137,7 +122,7 @@ const fireBullet = () => {
   World.add(engine.world, [bullet])
   let angle = player.angle + Math.PI * 0.5
   let speed = 9
-  Body.setVelocity(bullet, Matter.Vector.create(player.velocity.x + speed * Math.cos(angle), player.velocity.y + speed * Math.sin(angle)))
+  Body.setVelocity(bullet, Vector.create(player.velocity.x + speed * Math.cos(angle), player.velocity.y + speed * Math.sin(angle)))
   bullets.push(bullet)
 }
 
@@ -241,7 +226,7 @@ Events.on(engine, 'beforeTick', () => {
             body.successors.forEach((successor) => {
               World.add(engine.world, successor)
               Body.setPosition(successor, body.position)
-              Body.setVelocity(successor, Matter.Vector.rotate(body.velocity, (Math.random() - 0.5)))
+              Body.setVelocity(successor, Vector.rotate(body.velocity, (Math.random() - 0.5)))
             })
           }
         }
@@ -280,6 +265,8 @@ const initGame = () => {
   World.add(engine.world, [player, ...generateAsteroids()])
   isRunning = true
 }
+
+
 // run the engine and renderer
 runner = Engine.run(engine)
 Render.run(render)

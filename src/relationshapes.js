@@ -6,8 +6,8 @@ import { ZD_APPLE_GREEN,
   ZD_ORANGE,
   ZD_MANDY,
   ZD_FLAMINGO,
-  ZD_TEAL,
-ZD_COLOUR_DARK } from './zd-colours'
+  ZD_TEAL } from './zd-colours'
+import { plugin } from './wrap-config'
 
 const Common = Matter.Common
 const Bodies = Matter.Bodies
@@ -15,26 +15,6 @@ const Bodies = Matter.Bodies
 export const getRandomColor = () => (
   Common.choose([ZD_APPLE_GREEN, ZD_PELOROUS, ZD_YELLOW, ZD_ORANGE, ZD_MANDY, ZD_FLAMINGO, ZD_TEAL])
 )
-
-const render = {  // EXTRACT INTO CONFIG FILE!
-  options: {
-    width: 600,
-    height: 600
-  }
-}
-
-const plugin = {
-  wrap: {
-    min: {
-      x: 0,
-      y: 0
-    },
-    max: {
-      x: render.options.width,
-      y: render.options.height
-    }
-  }
-}
 
 // proper shapes
 
