@@ -28,6 +28,9 @@ const bullets = [] // array of live bullets
 let isRunning
 let score = 0
 
+let godMode = false // do you die?
+const gmbuf = []
+
 let keys = [] // array of pressed keys
 
 const resultMessage = document.getElementById('message')
@@ -149,6 +152,15 @@ document.onkeydown = (key) => {
   if (keys.indexOf(key.code) == -1) {
     keys.push(key.code)
   }
+
+  gmbuf.push(key.code)
+  if (gmbuf.length > 5) {
+    gmbuf.shift()
+  }
+  if (gmbuf.join(' ') == ['KeyI KeyD KeyD KeyQ KeyD']) {
+    godMode = !godMode // toggle godmode!
+    alert(`God mode ${ godMode ? 'ENGAGED!' : 'disengaged.'}`)
+  }
 }
 
 document.onkeyup = (key) => {
@@ -213,7 +225,7 @@ Events.on(engine, 'beforeTick', () => {
   Composite.allBodies(engine.world).forEach((body) => {
     if (!body.isBullet && !body.isPlayer) {
       // did it hit the player?
-      if (Bounds.overlaps(player.bounds, body.bounds)) {
+      if (Bounds.overlaps(player.bounds, body.bounds) && !godMode) {
         renderEndGameScreen(false)
         isRunning = false
       }
