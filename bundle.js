@@ -58,13 +58,14 @@
 
 	var _relationshapes = __webpack_require__(4);
 
+	var _wrapConfig = __webpack_require__(6);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } // Monkey-patched! Do not upgrade!
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } // Patched in node_modules! Do not upgrade!
 
 
-	_matterJs2.default.use('matter-wrap'); // Monkey-patched! Do not upgrade!
-	// try `use(MatterWrap)` ?
+	_matterJs2.default.use(_matterWrap2.default);
 
 	// module aliases
 	var Engine = _matterJs2.default.Engine;
@@ -76,7 +77,8 @@
 	var Composite = _matterJs2.default.Composite;
 	var Runner = _matterJs2.default.Runner;
 	var Body = _matterJs2.default.Body;
-	// const Svg = Matte r.Svg
+	var Vector = _matterJs2.default.Vector;
+	var Vertices = _matterJs2.default.Vertices;
 
 	var tick = void 0; // game tick counter
 	var runner = void 0; // game runner
@@ -111,20 +113,7 @@
 	  }
 	});
 
-	var plugin = {
-	  wrap: {
-	    min: {
-	      x: 0,
-	      y: 0
-	    },
-	    max: {
-	      x: render.options.width,
-	      y: render.options.height
-	    }
-	  }
-	};
-
-	var playerShape = _matterJs2.default.Vertices.create([{ x: 0, y: 15 }, { x: -10, y: -15 }, { x: 10, y: -15 }], Body);
+	var playerShape = Vertices.create([{ x: 0, y: 15 }, { x: -10, y: -15 }, { x: 10, y: -15 }], Body);
 
 	var createPlayer = function createPlayer() {
 	  var player = Bodies.fromVertices(render.options.width / 2, render.options.height / 2, playerShape, 20, { // triangle
@@ -135,7 +124,7 @@
 	    friction: 0
 	  });
 	  player.render.fillStyle = _zdColours.ZD_COLOUR_DARK;
-	  player.plugin = plugin;
+	  player.plugin = _wrapConfig.plugin;
 	  player.isPlayer = true;
 	  return player;
 	};
@@ -165,7 +154,7 @@
 	  }
 	  var block = (0, _relationshapes.getRandomShape)(x, y, color);
 	  Body.setAngularVelocity(block, (Math.random() - 0.5) * 0.1);
-	  Body.setVelocity(block, _matterJs2.default.Vector.create((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2));
+	  Body.setVelocity(block, Vector.create((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2));
 	  return block;
 	};
 
@@ -184,7 +173,7 @@
 	      fillStyle: _zdColours.ZD_COLOUR_DARK,
 	      strokeStyle: 'transparent'
 	    },
-	    plugin: plugin,
+	    plugin: _wrapConfig.plugin,
 	    friction: 0,
 	    frictionStatic: 0,
 	    frictionAir: 0
@@ -193,7 +182,7 @@
 	  World.add(engine.world, [bullet]);
 	  var angle = player.angle + Math.PI * 0.5;
 	  var speed = 9;
-	  Body.setVelocity(bullet, _matterJs2.default.Vector.create(player.velocity.x + speed * Math.cos(angle), player.velocity.y + speed * Math.sin(angle)));
+	  Body.setVelocity(bullet, Vector.create(player.velocity.x + speed * Math.cos(angle), player.velocity.y + speed * Math.sin(angle)));
 	  bullets.push(bullet);
 	};
 
@@ -303,7 +292,7 @@
 	            body.successors.forEach(function (successor) {
 	              World.add(engine.world, successor);
 	              Body.setPosition(successor, body.position);
-	              Body.setVelocity(successor, _matterJs2.default.Vector.rotate(body.velocity, Math.random() - 0.5));
+	              Body.setVelocity(successor, Vector.rotate(body.velocity, Math.random() - 0.5));
 	            });
 	          }
 	        }
@@ -342,6 +331,7 @@
 	  World.add(engine.world, [player].concat(_toConsumableArray(generateAsteroids())));
 	  isRunning = true;
 	};
+
 	// run the engine and renderer
 	runner = Engine.run(engine);
 	Render.run(render);
@@ -10779,6 +10769,8 @@
 
 	var _zdColours = __webpack_require__(3);
 
+	var _wrapConfig = __webpack_require__(6);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var Common = _matterJs2.default.Common;
@@ -10786,26 +10778,6 @@
 
 	var getRandomColor = exports.getRandomColor = function getRandomColor() {
 	  return Common.choose([_zdColours.ZD_APPLE_GREEN, _zdColours.ZD_PELOROUS, _zdColours.ZD_YELLOW, _zdColours.ZD_ORANGE, _zdColours.ZD_MANDY, _zdColours.ZD_FLAMINGO, _zdColours.ZD_TEAL]);
-	};
-
-	var render = { // EXTRACT INTO CONFIG FILE!
-	  options: {
-	    width: 600,
-	    height: 600
-	  }
-	};
-
-	var plugin = {
-	  wrap: {
-	    min: {
-	      x: 0,
-	      y: 0
-	    },
-	    max: {
-	      x: render.options.width,
-	      y: render.options.height
-	    }
-	  }
 	};
 
 	// proper shapes
@@ -10819,11 +10791,11 @@
 	        fillStyle: color,
 	        strokeStyle: 'transparent'
 	      },
-	      plugin: plugin,
+	      plugin: _wrapConfig.plugin,
 	      angularFriction: 0.98,
 	      friction: 0
 	    }),
-	    successors: [createSmallSquare(x, y, color), createSmallSquare(x, y, color)]
+	    successors: [createSmallSquare(x, y, color), createSmallSquare(x, y, color), createSmallSquare(x, y, color)]
 	  };
 	};
 
@@ -10834,7 +10806,7 @@
 	        fillStyle: color,
 	        strokeStyle: 'transparent'
 	      },
-	      plugin: plugin,
+	      plugin: _wrapConfig.plugin,
 	      friction: 0,
 	      frictionStatic: 0,
 	      frictionAir: 0
@@ -10850,7 +10822,7 @@
 	        fillStyle: color,
 	        strokeStyle: 'transparent'
 	      },
-	      plugin: plugin,
+	      plugin: _wrapConfig.plugin,
 	      friction: 0,
 	      frictionStatic: 0,
 	      frictionAir: 0
@@ -10866,7 +10838,7 @@
 	        fillStyle: color,
 	        strokeStyle: 'transparent'
 	      },
-	      plugin: plugin,
+	      plugin: _wrapConfig.plugin,
 	      friction: 0,
 	      frictionStatic: 0,
 	      frictionAir: 0
@@ -10881,7 +10853,7 @@
 	        fillStyle: color,
 	        strokeStyle: 'transparent'
 	      },
-	      plugin: plugin,
+	      plugin: _wrapConfig.plugin,
 	      friction: 0,
 	      frictionStatic: 0,
 	      frictionAir: 0
@@ -10896,7 +10868,7 @@
 	        fillStyle: color,
 	        strokeStyle: 'transparent'
 	      },
-	      plugin: plugin,
+	      plugin: _wrapConfig.plugin,
 	      friction: 0,
 	      frictionStatic: 0,
 	      frictionAir: 0
@@ -10912,7 +10884,7 @@
 	      fillStyle: color,
 	      strokeStyle: 'transparent'
 	    },
-	    plugin: plugin,
+	    plugin: _wrapConfig.plugin,
 	    friction: 0,
 	    frictionStatic: 0,
 	    frictionAir: 0
@@ -10925,7 +10897,7 @@
 	      fillStyle: color,
 	      strokeStyle: 'transparent'
 	    },
-	    plugin: plugin,
+	    plugin: _wrapConfig.plugin,
 	    friction: 0,
 	    frictionStatic: 0,
 	    frictionAir: 0
@@ -10938,7 +10910,7 @@
 	      fillStyle: color,
 	      strokeStyle: 'transparent'
 	    },
-	    plugin: plugin,
+	    plugin: _wrapConfig.plugin,
 	    friction: 0,
 	    frictionStatic: 0,
 	    frictionAir: 0
@@ -11012,6 +10984,35 @@
 	  }
 
 	  return _semiCircle(x, y, sides, radius, options);
+	};
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+	"use strict";
+
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	var render = { // EXTRACT INTO CONFIG FILE!
+	  options: {
+	    width: 600,
+	    height: 600
+	  }
+	};
+
+	var plugin = exports.plugin = {
+	  wrap: {
+	    min: {
+	      x: 0,
+	      y: 0
+	    },
+	    max: {
+	      x: render.options.width,
+	      y: render.options.height
+	    }
+	  }
 	};
 
 /***/ })
